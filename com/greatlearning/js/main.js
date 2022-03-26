@@ -1,4 +1,22 @@
-let quotes_array = [
+/*
+
+Note :- WPM is calculated by total number of words entered by user.
+
+e.g if user entered (in a minute) :- All the world's a stage, and all the men and women merely players.
+
+WPM is 13 since 13 words are entered here (assuming each word is separated by space)
+
+if user entered (in a minute):-
+All the world's a stage, and all the men and women merely players.
+The journey of thousand miles begins with a single step.
+
+WPM is 23
+
+I have added console.log statement for the same, please confirm total number of words entered there.
+
+*/
+
+let popularQuotes = [
     "All the world's a stage, and all the men and women merely players.",
     "The journey of thousand miles begins with a single step.",
     "A rose by any other name would smell as sweet.",
@@ -32,24 +50,7 @@ let current_quote = "";
 let quoteNo = 0;
 let timer = null;
 
-function updateQuote() {
-    quote_text.textContent = null;
-    current_quote = quotes_array[quoteNo];
-    allInputStringsEnteredByUser = allInputStringsEnteredByUser + input_area.value + ' ';
-
-    current_quote.split('').forEach(char => {
-        const charSpan = document.createElement('span')
-        charSpan.innerText = char
-        quote_text.appendChild(charSpan)
-    })
-
-    if (quoteNo < quotes_array.length - 1)
-        quoteNo++;
-    else
-        quoteNo = 0;
-}
-
-function processCurrentText() {
+function verifyInput() {
 
     let curr_input = input_area.value;
     let curr_input_array = curr_input.split('');
@@ -57,18 +58,18 @@ function processCurrentText() {
     errors = 0;
 
     let quoteSpanArray = quote_text.querySelectorAll('span');
-    quoteSpanArray.forEach((char, index) => {
+    quoteSpanArray.forEach((spanTag, index) => {
         let typedChar = curr_input_array[index]
 
         if (typedChar == null) {
-            char.classList.remove('correct_char');
-            char.classList.remove('incorrect_char');
-        } else if (typedChar === char.innerText) {
-            char.classList.add('correct_char');
-            char.classList.remove('incorrect_char');
+            spanTag.classList.remove('correct_char');
+            spanTag.classList.remove('incorrect_char');
+        } else if (typedChar === spanTag.innerText) {
+            spanTag.classList.add('correct_char');
+            spanTag.classList.remove('incorrect_char');
         } else {
-            char.classList.add('incorrect_char');
-            char.classList.remove('correct_char');
+            spanTag.classList.add('incorrect_char');
+            spanTag.classList.remove('correct_char');
             errors++;
         }
     });
@@ -85,17 +86,34 @@ function processCurrentText() {
     }
 }
 
+function updateQuote() {
+    quote_text.textContent = null;
+    current_quote = popularQuotes[quoteNo];
+    allInputStringsEnteredByUser = allInputStringsEnteredByUser + input_area.value + ' ';
+
+    current_quote.split('').forEach(char => {
+        const charSpan = document.createElement('span')
+        charSpan.innerText = char
+        quote_text.appendChild(charSpan)
+    })
+
+    if (quoteNo < popularQuotes.length - 1)
+        quoteNo++;
+    else
+        quoteNo = 0;
+}
+
 function updateTimer() {
     if (timeLeft > 0) {
         timeLeft--;
         timeElapsed++;
         timer_text.textContent = timeLeft + "s";
     } else {
-        finishGame();
+        publishResult();
     }
 }
 
-function finishGame() {
+function publishResult() {
     clearInterval(timer);
     input_area.disabled = true;
     quote_text.textContent = "Click on restart to start a new game.";
@@ -109,6 +127,7 @@ function finishGame() {
 
     cpm_group.style.display = "block";
     wpm_group.style.display = "block";
+    allInputStringsEnteredByUser = '';
 }
 
 function calculateWordCount() {
@@ -130,15 +149,15 @@ function calculateWordCount() {
     return wordCount;
 }
 
-function startGame() {
+function startTyping() {
     if (timer != null)
         return;
-    resetValues();
+    reset();
     updateQuote();
     timer = setInterval(updateTimer, 1000);
 }
 
-function resetValues() {
+function reset() {
     clearInterval(timer);
     timer = null;
     timeLeft = TIME_LIMIT;

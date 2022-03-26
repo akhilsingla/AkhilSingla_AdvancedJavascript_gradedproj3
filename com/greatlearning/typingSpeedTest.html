@@ -30,9 +30,9 @@
     </div>
 
     <div class="quote">Click on the area below to start the game.</div>
-    <textarea class="input_area" onfocus="startGame()" oninput="processCurrentText()"
+    <textarea class="input_area" onfocus="startTyping()" oninput="verifyInput()"
               placeholder="start typing here..."></textarea>
-    <button class="restart_btn" onclick="resetValues()">Restart</button>
+    <button class="restart_btn" onclick="reset()">Restart</button>
 </div>
 <script src="js/main.js"></script>
 </body>
